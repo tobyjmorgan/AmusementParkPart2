@@ -45,7 +45,7 @@ class PassGenerator {
     
     // static method that returns a pass based on the provided information, but throws
     // errors when certain validations are not met
-    static func generatePass(applicant: ApplicantDetails, entrantType: EntrantType) throws -> Pass {
+    static func generatePass(applicant: PersonalDetails, entrantType: EntrantType) throws -> Pass {
         
         switch entrantType {
             

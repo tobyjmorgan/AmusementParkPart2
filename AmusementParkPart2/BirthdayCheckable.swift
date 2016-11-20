@@ -58,4 +58,4 @@ extension BirthdayCheckable {
     }
 }
 
-extension ApplicantDetails: BirthdayCheckable {}
+extension PersonalDetails: BirthdayCheckable {}

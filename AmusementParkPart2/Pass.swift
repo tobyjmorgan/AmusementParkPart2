@@ -11,10 +11,10 @@ import Foundation
 class Pass: ReswipeCheckable {
 
     let permissions: [AccessPermission]
-    let entrant: ApplicantDetails
+    let entrant: PersonalDetails
     let entrantType: EntrantType
     
-    init(permissions: [AccessPermission], entrant: ApplicantDetails, entrantType: EntrantType) {
+    init(permissions: [AccessPermission], entrant: PersonalDetails, entrantType: EntrantType) {
         self.permissions = permissions
         self.entrant = entrant
         self.entrantType = entrantType

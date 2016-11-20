@@ -11,7 +11,7 @@ import Foundation
 // a struct to capture the applicants personal information
 // all optionals since none of these properties are mandatory
 // across the different entrant types
-struct ApplicantDetails {
+struct PersonalDetails {
     var firstName: String?
     var lastName: String?
     var dateOfBirth: Date?
