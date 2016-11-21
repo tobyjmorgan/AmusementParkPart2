@@ -7,22 +7,37 @@
 //
 
 import Foundation
+import UIKit
+
+protocol Enableable {
+    var isEnabled: Bool { get set }
+}
+
+protocol Taggable {
+    var tag: Int { get set }
+}
+
+protocol DataEntryPolicyCompliant: Enableable, Taggable {}
+
+extension UILabel: DataEntryPolicyCompliant {}
+extension UITextField: DataEntryPolicyCompliant {}
+extension UIButton: DataEntryPolicyCompliant {}
 
 struct DataEntryPolicy {
     
-    enum labelAndTextFieldTags: Int {
-        case none
-        case dateOfBirth
-        case ssn
-        case projectNumber
-        case firstName
-        case lastName
-        case company
-        case streetAddress
-        case city
-        case state
-        case zipCode
-    }
+    let enabledTags: [Int]
     
-    let enabled: [labelAndTextFieldTags]
+    func applyPolicy<T: DataEntryPolicyCompliant>(to controls: [T]) {
+        
+        for var control in controls {
+            control.isEnabled = false
+        }
+
+        for var control in controls {
+            if enabledTags.contains(control.tag) {
+                
+                control.isEnabled = true
+            }
+        }
+    }
 }

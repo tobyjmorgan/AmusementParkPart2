@@ -30,11 +30,28 @@ class ViewController: UIViewController {
     @IBAction func onEntrantType(_ sender: AnyObject) {
     }
     
+    enum DataEntryTags: Int {
+        case none
+        case dateOfBirth
+        case ssn
+        case projectNumber
+        case firstName
+        case lastName
+        case company
+        case streetAddress
+        case city
+        case state
+        case zipCode
+    }
     
+    let aPolicy = DataEntryPolicy(enabledTags: [DataEntryTags.dateOfBirth.rawValue, DataEntryTags.firstName.rawValue])
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        aPolicy.applyPolicy(to: allLabels)
+        aPolicy.applyPolicy(to: allFields)
     }
 
     override func didReceiveMemoryWarning() {
