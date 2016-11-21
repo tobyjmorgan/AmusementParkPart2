@@ -9,7 +9,29 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    @IBOutlet var containerGeneratePassButton: UIView!
+    @IBOutlet var containerPopulateDataButton: UIView!
+    
+    @IBOutlet var allLabels: [UILabel]!
+    @IBOutlet var allFields: [UITextField]!
+    
+    @IBOutlet var entrantTypeStackView: UIStackView!
+    @IBOutlet var entrantSubTypeStackView: UIStackView!
+    
+    
+    
+    @IBAction func onGeneratePass() {
+    }
+    
+    @IBAction func onPopulateData() {
+    }
+    
+    @IBAction func onEntrantType(_ sender: AnyObject) {
+    }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
