@@ -337,6 +337,7 @@
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
+                        <outlet property="containerGeneratePassButton" destination="sCl-yI-kVf" id="SYh-Ve-Gju"/>
                         <outlet property="containerPopulateDataButton" destination="lkM-uP-Voi" id="mf1-4D-8XF"/>
                         <outlet property="entrantSubTypeStackView" destination="D1c-vE-FGw" id="ugg-61-xaX"/>
                         <outlet property="entrantTypeStackView" destination="r1a-vF-Zdh" id="COz-X2-gBL"/>

@@ -15,34 +15,6 @@ class PassGenerator {
         case missingInformation(String), doesNotQualify(String)
     }
     
-    // static method that returns the AccessPermissions associated with the specified EntrantType
-    static func getAccessPermissions(for entrantType: EntrantType) -> [AccessPermission] {
-        
-        switch entrantType {
-            
-        case .guest(let guestType) :
-            switch guestType {
-            case .classic, .freeChild:
-                return [.areaAccess(.amusements), .rideAccess(.allRides), .ridePriority(.standard)]
-            case .vip:
-                return [.areaAccess(.amusements), .rideAccess(.allRides), .ridePriority(.skipLines), .discountAccess(.food, 10), .discountAccess(.merchandise, 20)]
-            }
-            
-        case .employee(let employeeType) :
-            switch employeeType {
-            case .hourlyFoodServices :
-                return [.areaAccess(.amusements), .areaAccess(.kitchen), .rideAccess(.allRides), .ridePriority(.standard), .discountAccess(.food, 15), .discountAccess(.merchandise, 25)]
-            case .hourlyRideServices :
-                return [.areaAccess(.amusements), .areaAccess(.rideControl), .rideAccess(.allRides), .ridePriority(.standard), .discountAccess(.food, 15), .discountAccess(.merchandise, 25)]
-            case .hourlyMaintenance :
-                return [.areaAccess(.amusements), .areaAccess(.kitchen), .areaAccess(.rideControl), .areaAccess(.maintenance), .rideAccess(.allRides), .ridePriority(.standard), .discountAccess(.food, 15), .discountAccess(.merchandise, 25)]
-            }
-            
-        case .manager :
-            return [.areaAccess(.amusements), .areaAccess(.kitchen), .areaAccess(.rideControl), .areaAccess(.maintenance), .areaAccess(.office), .rideAccess(.allRides), .ridePriority(.standard), .discountAccess(.food, 25), .discountAccess(.merchandise, 25)]
-        }
-    }
-    
     // static method that returns a pass based on the provided information, but throws
     // errors when certain validations are not met
     static func generatePass(applicant: PersonalDetails, entrantType: EntrantType) throws -> Pass {
@@ -53,7 +25,12 @@ class PassGenerator {
             
             switch guestType {
                 
+            case .classic, .vip :
+                // no validation required
+                break
+            
             case .freeChild:
+                
                 guard let dob = applicant.dateOfBirth else {
                     throw PassGeneratorError.missingInformation("Date of Birth")
                 }
@@ -61,11 +38,57 @@ class PassGenerator {
                 guard Date().timeIntervalSince1970 - dob.timeIntervalSince1970 < DateHelper.getTimeInterval(numberOfYears: 5) else {
                     throw PassGeneratorError.doesNotQualify("Age exceeds maximum age for Child pass")
                 }
+            
+            case .seasonPass:
+                guard applicant.firstName != nil else {
+                    throw PassGeneratorError.missingInformation("First Name")
+                }
                 
-            case .classic, .vip :
-                // no validation required
-                break
+                guard applicant.lastName != nil else {
+                    throw PassGeneratorError.missingInformation("Last Name")
+                }
+                
+                guard applicant.street != nil else {
+                    throw PassGeneratorError.missingInformation("Street Address")
+                }
+                
+                guard applicant.city != nil else {
+                    throw PassGeneratorError.missingInformation("City")
+                }
+                
+                guard applicant.state != nil else {
+                    throw PassGeneratorError.missingInformation("State")
+                }
+                
+                guard applicant.zipCode != nil else {
+                    throw PassGeneratorError.missingInformation("Zip Code")
+                }
+                
+                guard applicant.dateOfBirth != nil else {
+                    throw PassGeneratorError.missingInformation("Date of Birth")
+                }
+                
+            case .senior:
+                
+                guard applicant.firstName != nil else {
+                    throw PassGeneratorError.missingInformation("First Name")
+                }
+                
+                guard applicant.lastName != nil else {
+                    throw PassGeneratorError.missingInformation("Last Name")
+                }
+                
+                guard let dob = applicant.dateOfBirth else {
+                    throw PassGeneratorError.missingInformation("Date of Birth")
+                }
+                
+                // N.B. no minimum age was specified to qualify for a senior pass
+                // but assumed it would be 60 and added validation for that
+                guard Date().timeIntervalSince1970 - dob.timeIntervalSince1970 > DateHelper.getTimeInterval(numberOfYears: 60) else {
+                    throw PassGeneratorError.doesNotQualify("Age exceeds minimum age for Senior pass")
+                }
             }
+            
             
         case .employee(_), .manager :
             guard applicant.firstName != nil else {
@@ -91,8 +114,37 @@ class PassGenerator {
             guard applicant.zipCode != nil else {
                 throw PassGeneratorError.missingInformation("Zip Code")
             }
+            
+            guard applicant.socialSecurityNumber != nil else {
+                throw PassGeneratorError.missingInformation("Social Security Number")
+            }
+            
+            guard applicant.dateOfBirth != nil else {
+                throw PassGeneratorError.missingInformation("Date of Birth")
+            }
+            
+            // N.B. for contract type employee project number is an associated value
+            // so is validated before call to pass generation
+            
+        case .vendor(_) :
+            guard applicant.firstName != nil else {
+                throw PassGeneratorError.missingInformation("First Name")
+            }
+            
+            guard applicant.lastName != nil else {
+                throw PassGeneratorError.missingInformation("Last Name")
+            }
+            
+            guard applicant.dateOfBirth != nil else {
+                throw PassGeneratorError.missingInformation("Date of Birth")
+            }
+            
+            // N.B. company and date of visit are associated values of vendor entrant type
+            // so are validated before call to pass generation
         }
         
-        return Pass(permissions: getAccessPermissions(for: entrantType), entrant: applicant, entrantType: entrantType)
+        let permissions = entrantType.getAreaAccessPermissions() + entrantType.getRideAccessPermissions() + entrantType.getDiscountAccessPermissions()
+        
+        return Pass(permissions: permissions, entrant: applicant, entrantType: entrantType)
     }
 }

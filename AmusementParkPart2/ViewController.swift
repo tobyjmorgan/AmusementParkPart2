@@ -22,6 +22,8 @@ class ViewController: UIViewController {
     
     
     @IBAction func onGeneratePass() {
+        // gather up personal details
+        
     }
     
     @IBAction func onPopulateData() {
@@ -30,28 +32,17 @@ class ViewController: UIViewController {
     @IBAction func onEntrantType(_ sender: AnyObject) {
     }
     
-    enum DataEntryTags: Int {
-        case none
-        case dateOfBirth
-        case ssn
-        case projectNumber
-        case firstName
-        case lastName
-        case company
-        case streetAddress
-        case city
-        case state
-        case zipCode
-    }
-    
-    let aPolicy = DataEntryPolicy(enabledTags: [DataEntryTags.dateOfBirth.rawValue, DataEntryTags.firstName.rawValue])
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        aPolicy.applyPolicy(to: allLabels)
-        aPolicy.applyPolicy(to: allFields)
+        // round the corners of the bottom buttons
+        containerGeneratePassButton.layer.cornerRadius = 10.0
+        containerPopulateDataButton.layer.cornerRadius = 10.0
+        
+        EntrantType.employee(.hourlyFoodServices).getEnablementPolicy().applyPolicy(to: allLabels)
+        EntrantType.employee(.hourlyFoodServices).getEnablementPolicy().applyPolicy(to: allFields)
     }
 
     override func didReceiveMemoryWarning() {

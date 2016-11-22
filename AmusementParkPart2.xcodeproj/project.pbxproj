@@ -27,8 +27,10 @@
 		6B501F991DE2396F0081FF6A /* ReswipeCheckable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B501F8C1DE2396F0081FF6A /* ReswipeCheckable.swift */; };
 		6B501F9A1DE2396F0081FF6A /* AccessDenied.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6B501F8D1DE2396F0081FF6A /* AccessDenied.wav */; };
 		6B501F9B1DE2396F0081FF6A /* AccessGranted.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6B501F8E1DE2396F0081FF6A /* AccessGranted.wav */; };
-		6B501FA11DE363B80081FF6A /* DataEntryPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B501FA01DE363B80081FF6A /* DataEntryPolicy.swift */; };
-		6B501FA31DE37F6B0081FF6A /* Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B501FA21DE37F6B0081FF6A /* Hashable.swift */; };
+		6B501FA11DE363B80081FF6A /* EnablementPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B501FA01DE363B80081FF6A /* EnablementPolicy.swift */; };
+		6B501FA51DE39CF80081FF6A /* EntrantAccessRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B501FA41DE39CF80081FF6A /* EntrantAccessRule.swift */; };
+		6B501FA71DE3E8BC0081FF6A /* CompaniesAndProjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B501FA61DE3E8BC0081FF6A /* CompaniesAndProjects.swift */; };
+		6B501FA91DE3FB8B0081FF6A /* DataEntryPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B501FA81DE3FB8B0081FF6A /* DataEntryPolicies.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,8 +77,10 @@
 		6B501F8C1DE2396F0081FF6A /* ReswipeCheckable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReswipeCheckable.swift; sourceTree = "<group>"; };
 		6B501F8D1DE2396F0081FF6A /* AccessDenied.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = AccessDenied.wav; sourceTree = "<group>"; };
 		6B501F8E1DE2396F0081FF6A /* AccessGranted.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = AccessGranted.wav; sourceTree = "<group>"; };
-		6B501FA01DE363B80081FF6A /* DataEntryPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataEntryPolicy.swift; sourceTree = "<group>"; };
-		6B501FA21DE37F6B0081FF6A /* Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hashable.swift; sourceTree = "<group>"; };
+		6B501FA01DE363B80081FF6A /* EnablementPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnablementPolicy.swift; sourceTree = "<group>"; };
+		6B501FA41DE39CF80081FF6A /* EntrantAccessRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntrantAccessRule.swift; sourceTree = "<group>"; };
+		6B501FA61DE3E8BC0081FF6A /* CompaniesAndProjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompaniesAndProjects.swift; sourceTree = "<group>"; };
+		6B501FA81DE3FB8B0081FF6A /* DataEntryPolicies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataEntryPolicies.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +133,7 @@
 			children = (
 				6B501F541DE238F80081FF6A /* AppDelegate.swift */,
 				6B501F561DE238F80081FF6A /* ViewController.swift */,
+				6B501FA81DE3FB8B0081FF6A /* DataEntryPolicies.swift */,
 				6B501F9C1DE2397A0081FF6A /* Sounds */,
 				6B501F9D1DE239920081FF6A /* HomeGrown */,
 				6B501F9E1DE239AD0081FF6A /* Model */,
@@ -171,8 +176,8 @@
 		6B501F9D1DE239920081FF6A /* HomeGrown */ = {
 			isa = PBXGroup;
 			children = (
-				6B501FA01DE363B80081FF6A /* DataEntryPolicy.swift */,
 				6B501F841DE2396F0081FF6A /* DateHelper.swift */,
+				6B501FA01DE363B80081FF6A /* EnablementPolicy.swift */,
 			);
 			name = HomeGrown;
 			sourceTree = "<group>";
@@ -180,11 +185,12 @@
 		6B501F9E1DE239AD0081FF6A /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				6B501FA61DE3E8BC0081FF6A /* CompaniesAndProjects.swift */,
 				6B501F851DE2396F0081FF6A /* PassApplication.swift */,
-				6B501FA21DE37F6B0081FF6A /* Hashable.swift */,
 				6B501F861DE2396F0081FF6A /* AccessPermission.swift */,
 				6B501F871DE2396F0081FF6A /* BirthdayCheckable.swift */,
 				6B501F881DE2396F0081FF6A /* Describable.swift */,
+				6B501FA41DE39CF80081FF6A /* EntrantAccessRule.swift */,
 				6B501F891DE2396F0081FF6A /* PassGenerator.swift */,
 				6B501F8A1DE2396F0081FF6A /* Pass.swift */,
 				6B501F8B1DE2396F0081FF6A /* PassReader.swift */,
@@ -344,14 +350,16 @@
 				6B501F911DE2396F0081FF6A /* DateHelper.swift in Sources */,
 				6B501F921DE2396F0081FF6A /* PassApplication.swift in Sources */,
 				6B501F571DE238F80081FF6A /* ViewController.swift in Sources */,
-				6B501FA11DE363B80081FF6A /* DataEntryPolicy.swift in Sources */,
+				6B501FA11DE363B80081FF6A /* EnablementPolicy.swift in Sources */,
 				6B501F941DE2396F0081FF6A /* BirthdayCheckable.swift in Sources */,
 				6B501F961DE2396F0081FF6A /* PassGenerator.swift in Sources */,
 				6B501F551DE238F80081FF6A /* AppDelegate.swift in Sources */,
-				6B501FA31DE37F6B0081FF6A /* Hashable.swift in Sources */,
+				6B501FA51DE39CF80081FF6A /* EntrantAccessRule.swift in Sources */,
+				6B501FA91DE3FB8B0081FF6A /* DataEntryPolicies.swift in Sources */,
 				6B501F931DE2396F0081FF6A /* AccessPermission.swift in Sources */,
 				6B501F951DE2396F0081FF6A /* Describable.swift in Sources */,
 				6B501F991DE2396F0081FF6A /* ReswipeCheckable.swift in Sources */,
+				6B501FA71DE3E8BC0081FF6A /* CompaniesAndProjects.swift in Sources */,
 				6B501F971DE2396F0081FF6A /* Pass.swift in Sources */,
 				6B501F981DE2396F0081FF6A /* PassReader.swift in Sources */,
 				6B501F8F1DE2396F0081FF6A /* SoundManager.swift in Sources */,

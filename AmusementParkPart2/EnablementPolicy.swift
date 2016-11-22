@@ -1,5 +1,5 @@
 //
-//  DataEntryPolicy.swift
+//  EnablementPolicy.swift
 //  AmusementParkPart2
 //
 //  Created by redBred LLC on 11/21/16.
@@ -17,17 +17,17 @@ protocol Taggable {
     var tag: Int { get set }
 }
 
-protocol DataEntryPolicyCompliant: Enableable, Taggable {}
+protocol EnablementPolicyCompliant: Enableable, Taggable {}
 
-extension UILabel: DataEntryPolicyCompliant {}
-extension UITextField: DataEntryPolicyCompliant {}
-extension UIButton: DataEntryPolicyCompliant {}
+extension UILabel: EnablementPolicyCompliant {}
+extension UITextField: EnablementPolicyCompliant {}
+extension UIButton: EnablementPolicyCompliant {}
 
-struct DataEntryPolicy {
+struct EnablementPolicy {
     
     let enabledTags: [Int]
     
-    func applyPolicy<T: DataEntryPolicyCompliant>(to controls: [T]) {
+    func applyPolicy<T: EnablementPolicyCompliant>(to controls: [T]) {
         
         for var control in controls {
             control.isEnabled = false

@@ -19,6 +19,7 @@ struct PersonalDetails {
     var city: String?
     var state: String?
     var zipCode: Int?
+    var socialSecurityNumber: Int?
 }
 
 // enumeration to capture each type of guest
@@ -26,6 +27,8 @@ enum GuestType {
     case classic
     case vip
     case freeChild
+    case seasonPass
+    case senior
 }
 
 // enumeration to capture each type of employee
@@ -33,11 +36,20 @@ enum EmployeeType {
     case hourlyFoodServices
     case hourlyRideServices
     case hourlyMaintenance
+    case contractEmployee(ProjectNumber)
+}
+
+// enumeration to capture each type of manager
+enum ManagerType {
+    case shiftManager
+    case generalManager
+    case seniorManager
 }
 
 // enumeration to capture the different entrant types
 enum EntrantType {
     case guest(GuestType)
     case employee(EmployeeType)
-    case manager
+    case manager(ManagerType)
+    case vendor(CompanyName, Date)
 }
