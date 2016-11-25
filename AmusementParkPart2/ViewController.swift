@@ -30,6 +30,7 @@ class ViewController: UIViewController {
     @IBOutlet var entrantTypeStackView: UIStackView!
     @IBOutlet var entrantSubTypeStackView: UIStackView!
     
+    @IBOutlet var bottomLayoutConstraint: NSLayoutConstraint!
     
     
     
@@ -182,6 +183,9 @@ class ViewController: UIViewController {
         containerPopulateDataButton.layer.cornerRadius = 10.0
         
         createMasterTypeButtons()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardNotification(notification:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -189,6 +193,29 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    
+    
+    
+    //////////////////////////////////////////////////////////
+    // Mark: Text Field Delegate
+    func keyboardNotification(notification: Notification) {
+        
+        let userInfo = notification.userInfo!
+        let keyboardHeight = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height
+        let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
+        let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as! UInt
+        let moveUp = (notification.name == NSNotification.Name.UIKeyboardWillShow)
+        
+        bottomLayoutConstraint.constant = moveUp ? -keyboardHeight : 0
+        
+        let options = UIViewAnimationOptions(rawValue: curve << 16)
+        UIView.animate(withDuration: duration, delay: 0, options: options,
+                                   animations: {
+                                    self.view.layoutIfNeeded()
+            },
+                                   completion: nil
+        )
+    }
     
     
     
