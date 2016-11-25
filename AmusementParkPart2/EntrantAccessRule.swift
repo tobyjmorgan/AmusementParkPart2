@@ -8,107 +8,178 @@
 
 import Foundation
 
+extension ProjectNumber {
+    
+    // method returns area access permissions specific to a project number
+    func getAreaAccessRulesForProjectNumber() -> [AccessPermission] {
+        
+        switch self {
+            
+        case ._1001:
+            return [.areaAccess(.amusements), .areaAccess(.rideControl)]
+            
+        case ._1002:
+            return [.areaAccess(.amusements), .areaAccess(.rideControl), .areaAccess(.maintenance)]
+            
+        case ._1003:
+            return [.areaAccess(.amusements), .areaAccess(.rideControl), .areaAccess(.kitchen), .areaAccess(.maintenance), .areaAccess(.office)]
+            
+        case ._2001:
+            return [.areaAccess(.office)]
+            
+        case ._2002:
+            return [.areaAccess(.kitchen), .areaAccess(.maintenance)]
+        }
+    }
+}
+
+extension CompanyName {
+    
+    // method returns area access permissions specific to a company name
+    func getAreaAccessRulesForCompany() -> [AccessPermission] {
+        
+        switch self {
+            
+        case .Acme:
+            return [.areaAccess(.kitchen)]
+            
+        case .Orkin:
+            return [.areaAccess(.amusements), .areaAccess(.rideControl), .areaAccess(.kitchen)]
+            
+        case .Fedex:
+            return [.areaAccess(.maintenance), .areaAccess(.office)]
+            
+        case .NWElectrical:
+            return [.areaAccess(.amusements), .areaAccess(.rideControl), .areaAccess(.kitchen), .areaAccess(.maintenance), .areaAccess(.office)]
+        }
+    }
+}
+
 extension EntrantType {
     
     func getRideAccessPermissions() -> [AccessPermission] {
         
-        switch self {
+        switch masterType {
             
-        case .guest(let type):
-            switch type {
+        case .Guest:
+            switch subType {
                 
-            case .classic, .freeChild:
+            case .Adult, .Child:
                 return [.rideAccess(.allRides), .ridePriority(.standard)]
                 
-            case .vip, .seasonPass, .senior:
+            case .VIP, .SeasonPass, .Senior:
                 return [.rideAccess(.allRides), .ridePriority(.skipLines)]
-            }
-            
-        case .employee(let type):
-        
-            switch type {
-            
-            case .contractEmployee(_):
+                
+            default:
                 return []
-            
-            case .hourlyFoodServices, .hourlyRideServices, .hourlyMaintenance:
-                return [.rideAccess(.allRides), .ridePriority(.standard)]
             }
             
-        case .manager:
+        case .Employee:
+            
+            switch subType {
+                
+            case .ContractEmployee:
+                return []
+                
+            case .HourlyFoodServices, .HourlyRideServices, .HourlyMaintenance:
+                return [.rideAccess(.allRides), .ridePriority(.standard)]
+                
+            default:
+                return []
+            }
+            
+        case .Manager:
             return [.rideAccess(.allRides), .ridePriority(.standard)]
-
-        case .vendor(_):
+            
+        case .Vendor:
             return []
         }
     }
     
     func getDiscountAccessPermissions() -> [AccessPermission] {
-        switch  self {
+        switch  masterType {
             
-        case .guest(let type):
-            switch type {
+        case .Guest:
+            switch subType {
                 
-            case .classic, .freeChild:
+            case .Adult, .Child:
                 return []
                 
-            case .vip:
+            case .VIP:
                 return [.discountAccess(.food, 10), .discountAccess(.merchandise, 20)]
                 
-            case .seasonPass:
+            case .SeasonPass:
                 return [.discountAccess(.food, 10), .discountAccess(.merchandise, 20)]
                 
-            case.senior:
+            case.Senior:
                 return [.discountAccess(.food, 10), .discountAccess(.merchandise, 10)]
                 
-            }
-            
-        case .employee(let type):
-            switch type {
-            case .contractEmployee(_):
+            default:
                 return []
-            case .hourlyFoodServices, .hourlyRideServices, .hourlyMaintenance:
-                return [.discountAccess(.food, 15), .discountAccess(.merchandise, 25)]
             }
             
-        case .manager:
+        case .Employee:
+            switch subType {
+            
+            case .ContractEmployee:
+                return []
+            
+            case .HourlyFoodServices, .HourlyRideServices, .HourlyMaintenance:
+                return [.discountAccess(.food, 15), .discountAccess(.merchandise, 25)]
+            
+            default:
+                return []
+            }
+            
+        case .Manager:
             return [.discountAccess(.food, 25), .discountAccess(.merchandise, 25)]
             
-        case .vendor(_):
+        case .Vendor:
             return []
         }
     }
     
-    func getAreaAccessPermissions() -> [AccessPermission] {
+    func getAreaAccessPermissions(personalDetails: PersonalDetails) -> [AccessPermission] {
         
-        switch self {
+        switch masterType {
             
-        case .guest(_):
+        case .Guest:
             return [.areaAccess(.amusements)]
             
-        case .employee(let type):
+        case .Employee:
             
-            switch type {
+            switch subType {
                 
-            case .hourlyFoodServices:
+            case .HourlyFoodServices:
                 return [.areaAccess(.amusements), .areaAccess(.kitchen)]
                 
-            case .hourlyRideServices:
+            case .HourlyRideServices:
                 return [.areaAccess(.amusements), .areaAccess(.rideControl)]
                 
-            case .hourlyMaintenance:
+            case .HourlyMaintenance:
                 return [.areaAccess(.amusements), .areaAccess(.kitchen), .areaAccess(.rideControl), .areaAccess(.maintenance)]
                 
-            case .contractEmployee(let project):
-                return project.getAreaAccessRulesForProjectNumber()
+            case .ContractEmployee:
+                if let project = personalDetails.projectNumber {
+                    return project.getAreaAccessRulesForProjectNumber()
+                } else {
+                    return []
+                }
+                
+            default:
+                return []
             }
             
-        case .manager:
+        case .Manager:
             return [.areaAccess(.amusements), .areaAccess(.kitchen), .areaAccess(.rideControl), .areaAccess(.maintenance), .areaAccess(.office)]
             
-        case .vendor(let company, _):
-            return company.getAreaAccessRulesForCompany()
-            
+        case .Vendor:
+            if let company = personalDetails.companyName {
+                return company.getAreaAccessRulesForCompany()
+            } else {
+                return []
+            }
         }
     }
 }
+

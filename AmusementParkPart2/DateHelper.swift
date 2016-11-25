@@ -25,4 +25,10 @@ class DateHelper {
         
         return calendar.date(from: components)
     }
+    
+    static func getDateFromStringMM_DD_YYYY(stringDate: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM/dd/yyyy"
+        return dateFormatter.date(from: stringDate)
+    }
 }
