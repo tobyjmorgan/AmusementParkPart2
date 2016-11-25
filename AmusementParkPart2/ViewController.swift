@@ -157,6 +157,8 @@ class ViewController: UIViewController {
             reportError(message: "\(message) is a required field.")
         } catch PassGenerator.PassGeneratorError.invalidInformation(let message) {
             reportError(message: "Invalid value - \(message).")
+        } catch PassGenerator.PassGeneratorError.excessivelyLongValue(let message) {
+            reportError(message: "\(message): value too long.")
         } catch PassGenerator.PassGeneratorError.entrantSubTypeDoesNotRelateToMasterType {
             reportError(message: "The entrant sub-type does not relate to the entrant master-type.")
         } catch PassGenerator.PassGeneratorError.doesNotQualify(let message) {

@@ -31,7 +31,7 @@ struct PersonalDetails {
     var street: String?
     var city: String?
     var state: String?
-    var zipCode: String?
+    var zipCode: Int?
     var socialSecurityNumber: String?
     var companyName: CompanyName?
     var projectNumber: ProjectNumber?

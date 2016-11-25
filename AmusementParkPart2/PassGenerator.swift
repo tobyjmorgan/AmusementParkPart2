@@ -12,7 +12,7 @@ class PassGenerator {
     
     // errors thrown by the PassGenerator processing
     enum PassGeneratorError: Error {
-        case missingInformation(String), invalidInformation(String), doesNotQualify(String), entrantSubTypeDoesNotRelateToMasterType
+        case missingInformation(String), invalidInformation(String), excessivelyLongValue(String), doesNotQualify(String), entrantSubTypeDoesNotRelateToMasterType
     }
     
     // static method that returns a pass based on the provided information, but throws
@@ -41,6 +41,16 @@ class PassGenerator {
             return value
         }
         
+        // also checking that string length is less than specified length for exceeds grade
+        func isValueReasonableLength(string: String?, maxLength: Int) -> Bool {
+            guard let value = string,
+                value.lengthOfBytes(using: String.Encoding.utf8) <= maxLength else {
+                    return false
+            }
+            
+            return true
+        }
+        
         // create a target PersonalDetails object ready for values to be assigned to
         var details = PersonalDetails()
         
@@ -57,10 +67,18 @@ class PassGenerator {
                     throw PassGeneratorError.missingInformation("First Name")
                 }
                 
+                guard isValueReasonableLength(string: applicant.firstName, maxLength: 20) else {
+                    throw PassGeneratorError.excessivelyLongValue("First Name")
+                }
+                
                 guard isValuePresent(string: applicant.lastName) else {
                     throw PassGeneratorError.missingInformation("Last Name")
                 }
             
+                guard isValueReasonableLength(string: applicant.lastName, maxLength: 20) else {
+                    throw PassGeneratorError.excessivelyLongValue("Last Name")
+                }
+                
                 details.firstName = applicant.firstName
                 details.lastName = applicant.lastName
 
@@ -69,22 +87,40 @@ class PassGenerator {
                     throw PassGeneratorError.missingInformation("Street Address")
                 }
                 
+                guard isValueReasonableLength(string: applicant.street, maxLength: 30) else {
+                    throw PassGeneratorError.excessivelyLongValue("Street Address")
+                }
+                
                 guard isValuePresent(string: applicant.city) else {
                     throw PassGeneratorError.missingInformation("City")
+                }
+                
+                guard isValueReasonableLength(string: applicant.city, maxLength: 20) else {
+                    throw PassGeneratorError.excessivelyLongValue("City")
                 }
                 
                 guard isValuePresent(string: applicant.state) else {
                     throw PassGeneratorError.missingInformation("State")
                 }
                 
-                guard isValuePresent(string: applicant.zipCode) else {
+                guard isValueReasonableLength(string: applicant.state, maxLength: 2) else {
+                    throw PassGeneratorError.excessivelyLongValue("State")
+                }
+                
+                guard let zipString = getValue(string: applicant.zipCode) else {
                     throw PassGeneratorError.missingInformation("Zip Code")
                 }
 
+                // extra validation for zip code for exceeds grade
+                guard let zipCode = Int(zipString),
+                    zipCode < 99999 else {
+                    throw PassGeneratorError.invalidInformation("Zip Code")
+                }
+                
                 details.street = applicant.street
                 details.city = applicant.city
                 details.state = applicant.state
-                details.zipCode = applicant.zipCode
+                details.zipCode = zipCode
                
             case .dob:
                 guard let dobString = getValue(string: applicant.dateOfBirth) else {

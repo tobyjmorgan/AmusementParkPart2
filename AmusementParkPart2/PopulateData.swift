@@ -53,7 +53,7 @@ extension EntrantType {
                     details.lastName = "Bruno"
                     details.street = "9 Punching Bag Lane"
                     details.city = "Knoxville"
-                    details.state = "TN"
+                    details.state = "State Too Long"
                     details.zipCode = "77777"
                     details.dateOfBirth = "02/02/2002"
                 }
@@ -102,7 +102,7 @@ extension EntrantType {
                     details.zipCode = "11111"
                     details.dateOfBirth = "06/06/1986"
                     details.socialSecurityNumber = "444-55-6666"
-                    details.projectNumber = "9999"
+                    details.projectNumber = "Bad Project Number"
                 } else  {
                     details.firstName = "Bengals"
                     details.lastName = "Boy"
@@ -139,7 +139,7 @@ extension EntrantType {
             }
         case .Vendor:
             if random == 0 {
-                details.firstName = "Count"
+                details.firstName = "Extremely long name to test long names"
                 details.lastName = "Dracula"
                 details.companyName = "Acme"
                 details.dateOfBirth = "12/12/1990"
