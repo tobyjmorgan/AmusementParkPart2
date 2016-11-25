@@ -290,6 +290,8 @@
                         <outlet property="containerPopulateDataButton" destination="lkM-uP-Voi" id="mf1-4D-8XF"/>
                         <outlet property="entrantSubTypeStackView" destination="D1c-vE-FGw" id="ugg-61-xaX"/>
                         <outlet property="entrantTypeStackView" destination="r1a-vF-Zdh" id="COz-X2-gBL"/>
+                        <outlet property="lowerButtonStackView" destination="80Q-ih-aku" id="701-aV-04Z"/>
+                        <outlet property="lowerButtonStackViewBottomConstraint" destination="uQP-Qr-wlR" id="Awc-bq-pry"/>
                         <outletCollection property="allFields" destination="4oQ-3N-VIA" collectionClass="NSMutableArray" id="ZON-Fw-gfq"/>
                         <outletCollection property="allFields" destination="VxL-HF-843" collectionClass="NSMutableArray" id="Foy-iE-5Mb"/>
                         <outletCollection property="allFields" destination="33l-MG-hmj" collectionClass="NSMutableArray" id="as5-ge-Stz"/>

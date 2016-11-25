@@ -32,6 +32,8 @@ class ViewController: UIViewController {
     
     @IBOutlet var bottomLayoutConstraint: NSLayoutConstraint!
     
+    @IBOutlet var lowerButtonStackView: UIStackView!
+    @IBOutlet var lowerButtonStackViewBottomConstraint: NSLayoutConstraint!
     
     
     //////////////////////////////////////////////////////////
@@ -184,6 +186,7 @@ class ViewController: UIViewController {
         
         createMasterTypeButtons()
         
+        // listen for keyboard show/hide events
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardNotification(notification:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         
     }
@@ -196,27 +199,32 @@ class ViewController: UIViewController {
     
     
     
-    //////////////////////////////////////////////////////////
-    // Mark: Text Field Delegate
-    func keyboardNotification(notification: Notification) {
+   //////////////////////////////////////////////////////////
+    // Mark: Keyboard handling
+    func keyboardNotification(notification: NSNotification) {
         
-        let userInfo = notification.userInfo!
-        let keyboardHeight = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height
-        let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
-        let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as! UInt
-        let moveUp = (notification.name == NSNotification.Name.UIKeyboardWillShow)
+        // fetch the user dictionary and get thewhat will be the keyboards frame
+        guard let userInfo = notification.userInfo,
+            let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+                return
+        }
         
-        bottomLayoutConstraint.constant = moveUp ? -keyboardHeight : 0
-        
-        let options = UIViewAnimationOptions(rawValue: curve << 16)
-        UIView.animate(withDuration: duration, delay: 0, options: options,
-                                   animations: {
-                                    self.view.layoutIfNeeded()
-            },
-                                   completion: nil
-        )
+        if endFrame.origin.y >= UIScreen.main.bounds.size.height {
+            // keyboard is being hidden so restore the bottom constraint
+            UIView.animate(withDuration: 0.8) {
+                self.bottomLayoutConstraint.constant = 0
+                self.view.layoutIfNeeded()
+            }
+        } else {
+            // keyboard is about to be shown so slide up the nested view
+            // by increasing the layout constraint's constant value
+            // subtract the height of the buttons and its bottom constraint
+            UIView.animate(withDuration: 0.8) {
+                self.bottomLayoutConstraint.constant = endFrame.size.height - self.lowerButtonStackView.frame.size.height - self.lowerButtonStackViewBottomConstraint.constant
+                self.view.layoutIfNeeded()
+            }
+        }
     }
-    
     
     
     //////////////////////////////////////////////////////////
