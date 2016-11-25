@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var model = PassGeneratorModel()
+    var model = Model()
     var masterTypeButtons: [UIButton] = []
     var subTypeButtons: [UIButton] = []
     let entrantButtonColors = ButtonHighlightPolicy(highlightColor: UIColor.white, unhighlightColor: UIColor.lightGray)

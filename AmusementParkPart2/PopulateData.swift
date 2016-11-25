@@ -83,7 +83,7 @@ extension EntrantType {
                     details.socialSecurityNumber = "222-33-4444"
                 }
             case .ContractEmployee:
-                if random > 1 {
+                if random == 0 {
                     details.firstName = "Lions"
                     details.lastName = "Nut"
                     details.street = "22 Everyday Lane"
@@ -93,10 +93,20 @@ extension EntrantType {
                     details.dateOfBirth = "05/05/1985"
                     details.socialSecurityNumber = "333-44-5555"
                     details.projectNumber = "1001"
-                } else {
+                } else if random == 1 {
                     details.firstName = "Jets"
                     details.lastName = "Sucker"
                     details.street = "88 Loser Ave"
+                    details.city = "New York"
+                    details.state = "NY"
+                    details.zipCode = "11111"
+                    details.dateOfBirth = "06/06/1986"
+                    details.socialSecurityNumber = "444-55-6666"
+                    details.projectNumber = "9999"
+                } else  {
+                    details.firstName = "Bengals"
+                    details.lastName = "Boy"
+                    details.street = "44 Blah Ave"
                     details.city = "New York"
                     details.state = "NY"
                     details.zipCode = "11111"
@@ -128,16 +138,21 @@ extension EntrantType {
                 details.socialSecurityNumber = "777-77-7777"
             }
         case .Vendor:
-            if random > 1 {
+            if random == 0 {
                 details.firstName = "Count"
                 details.lastName = "Dracula"
                 details.companyName = "Acme"
                 details.dateOfBirth = "12/12/1990"
-            } else {
+            } else if random == 1 {
                 details.firstName = "Larry"
                 details.lastName = "Leech"
                 details.companyName = "Fedex"
                 details.dateOfBirth = "10/10/1995"
+            } else {
+                details.firstName = "Bad"
+                details.lastName = "Company"
+                details.companyName = "Koch Industries"
+                details.dateOfBirth = "10/10/1925"
             }
         }
         

@@ -1,5 +1,5 @@
 //
-//  PassGeneratorModel.swift
+//  Model.swift
 //  AmusementParkPart2
 //
 //  Created by redBred LLC on 11/22/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct PassGeneratorModel {
+struct Model {
     
     var activeEntrantType = EntrantType(masterType: .Guest, subType: .Child)
 }
