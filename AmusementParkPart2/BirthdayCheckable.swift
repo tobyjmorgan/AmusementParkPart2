@@ -12,17 +12,17 @@ import Foundation
 protocol BirthdayCheckable {
     var firstName: String? { get }
     var dateOfBirth: Date? { get }
-    func checkBirthday()
+    func checkBirthday() -> String?
 }
 
 extension BirthdayCheckable {
  
     // display a birthday message, include the name if available
-    func birthdayMessage() {
+    func birthdayMessage() -> String {
         if let name = firstName {
-            print("Happy Birthday \(name)!")
+            return "Happy Birthday \(name)!"
         } else {
-            print("Happy Birthday!")
+            return "Happy Birthday!"
         }
     }
     
@@ -49,12 +49,14 @@ extension BirthdayCheckable {
         return false
     }
     
-    // if its their birthday display a message
-    func checkBirthday() {
+    // if its their birthday return a message
+    func checkBirthday() -> String? {
         
         if isEntrantsBirthday() {
-            birthdayMessage()
+             return birthdayMessage()
         }
+        
+        return nil
     }
 }
 

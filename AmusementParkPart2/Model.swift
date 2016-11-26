@@ -8,7 +8,9 @@
 
 import Foundation
 
+// nice simple model!
 struct Model {
     
     var activeEntrantType = EntrantType(masterType: .Guest, subType: .Child)
+    var currenPass: Pass?
 }

@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+// quick way of applying color highlighting to buttons
 struct ButtonHighlightPolicy {
     
     let highlightColor: UIColor

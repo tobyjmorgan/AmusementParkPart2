@@ -16,7 +16,7 @@ protocol SwipeResult {
 
 // protocol for a PassReader - anything that can swipe a Pass
 protocol PassReader {
-    func swipe(pass: Pass) -> SwipeResult
+    func swipe(pass: Pass, silent: Bool) -> SwipeResult
 }
 
 // extensions to some of our AccessPermission stuff so that they can
@@ -30,11 +30,43 @@ extension Area: PassReader, DingsOrBuzzes {
         let message: String
     }
     
-    func swipe(pass: Pass) -> SwipeResult {
-
-        // check for birthday
-        pass.entrant.checkBirthday()
+    // this swipe is for a summary of all area access permissions
+    static func swipe(pass: Pass, silent: Bool) -> SwipeResult {
         
+        var message = ""
+        var foundOne = false
+        
+        // check for birthday
+        if let birthdayMessage = pass.entrant.checkBirthday() {
+            message += birthdayMessage + "\n"
+        }
+        
+        for permission in pass.permissions {
+            switch permission {
+            case .areaAccess(let area):
+                message += "\(area.description())\n"
+                foundOne = true
+            default:
+                break
+            }
+        }
+        
+        if foundOne {
+            
+            if !silent { playDingSound() }
+            return AreaSwipeResult(permitted: true, message: message)
+            
+        } else {
+            
+            // did not find that permission
+            if !silent { playBuzzSound() }
+            return AreaSwipeResult(permitted: false, message: "No Access")
+        }
+    }
+    
+    // this swipe is for accessing a specific area
+    func swipe(pass: Pass, silent: Bool) -> SwipeResult {
+
         // look for the permission and return the appropriate result
         for permission in pass.permissions {
             switch permission {
@@ -54,6 +86,9 @@ extension Area: PassReader, DingsOrBuzzes {
     }
 }
 
+
+
+
 extension RideAccess: PassReader, DingsOrBuzzes {
     
     struct RideAccessSwipeResult: SwipeResult {
@@ -62,14 +97,67 @@ extension RideAccess: PassReader, DingsOrBuzzes {
         let priority: RidePriority?
     }
     
-    func swipe(pass: Pass) -> SwipeResult {
+    // this swipe is for summary ride access and ride priority information
+    static func swipe(pass: Pass, silent: Bool) -> SwipeResult {
+    
+        var message = ""
+        var foundOne = false
+        
+        // guard against reswipes, but only if we are actually swiping
+        // silent swipe is when we use these methods to get info for
+        // display on the Pass view controller
+        if !silent {
+            guard !pass.isTryingToReswipe() else {
+                playBuzzSound()
+                return RideAccessSwipeResult(permitted: false, message: "Access Denied: : sorry, this pass has already been used recently. Please try again later.", priority: nil)
+            }
+        }
+        
+        // check for birthday
+        if let birthdayMessage = pass.entrant.checkBirthday() {
+            message += birthdayMessage + "\n"
+        }
+
+        for permission in pass.permissions {
+            switch permission {
+            case .rideAccess(let rideAccess):
+                message += rideAccess.description()
+                foundOne = true
+            default:
+                break
+            }
+        }
+        
+        for permission in pass.permissions {
+            switch permission {
+            case .ridePriority(let ridePriority):
+                if ridePriority == .skipLines {
+                    message += ", " + ridePriority.description()
+                }
+            default:
+                break
+            }
+        }
+        
+        if foundOne {
+            
+            if !silent { playDingSound() }
+            return RideAccessSwipeResult(permitted: true, message: message, priority: nil)
+            
+        } else {
+            
+            // did not find that permission
+            if !silent { playBuzzSound() }
+            return RideAccessSwipeResult(permitted: false, message: "No Access", priority: nil)
+        }
+    }
+    
+    // this swipe is for attempting to swipe at a specific ride
+    func swipe(pass: Pass, silent: Bool) -> SwipeResult {
         
         guard self != .noRides else {
             return RideAccessSwipeResult(permitted: false, message: "Doesn't make sense to try to access no rides", priority: nil)
         }
-        
-        // check for birthday
-        pass.entrant.checkBirthday()
         
         // guard against reswipes
         guard !pass.isTryingToReswipe() else {
@@ -108,6 +196,9 @@ extension RideAccess: PassReader, DingsOrBuzzes {
     }
 }
 
+
+
+
 extension DiscountType: PassReader, DingsOrBuzzes {
     
     struct DiscountTypeSwipeResult: SwipeResult {
@@ -116,17 +207,55 @@ extension DiscountType: PassReader, DingsOrBuzzes {
         let amount: Int?
     }
     
-    func swipe(pass: Pass) -> SwipeResult {
+    // this swipe is for all discount types
+    static func swipe(pass: Pass, silent: Bool) -> SwipeResult {
+        
+        var message = ""
+        var foundOne = false
         
         // check for birthday
-        pass.entrant.checkBirthday()
+        if let birthdayMessage = pass.entrant.checkBirthday() {
+            message += birthdayMessage + "\n"
+        }
+        
+        // look for the permission and return the appropriate result
+        for permission in pass.permissions {
+            switch permission {
+            case .discountAccess(let discount, let amount):
+                foundOne = true
+                if discount == .food {
+                    message += "\(amount)% Food Discount\n"
+                } else if discount == .merchandise {
+                    message += "\(amount)% Merchandise Discount\n"
+                }
+                
+            default:
+                break
+            }
+        }
+        
+        if foundOne {
+            
+            if !silent { playDingSound() }
+            return DiscountTypeSwipeResult(permitted: foundOne, message: message, amount: 0)
+
+        } else {
+            
+            // did not find that permission
+            if !silent { playBuzzSound() }
+            return DiscountTypeSwipeResult(permitted: false, message: "No Discounts", amount: nil)
+        }
+    }
+    
+    // this swipe is specific to an individual discount type
+    func swipe(pass: Pass, silent: Bool) -> SwipeResult {
         
         // look for the permission and return the appropriate result
         for permission in pass.permissions {
             switch permission {
             case .discountAccess(let discount, let amount):
                 if discount == self {
-                    playDingSound()
+                    if !silent { playDingSound() }
                     return DiscountTypeSwipeResult(permitted: true, message: "Discount: \(discount) \(amount)%", amount: amount)
                 }
             default:
@@ -135,7 +264,7 @@ extension DiscountType: PassReader, DingsOrBuzzes {
         }
         
         // did not find that permission
-        playBuzzSound()
+        if !silent { playBuzzSound() }
         return DiscountTypeSwipeResult(permitted: false, message: "Sorry you do not have a \(self) discount", amount: nil)
     }
 }

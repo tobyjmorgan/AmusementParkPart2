@@ -9,8 +9,8 @@
 import Foundation
 
 // a struct to capture the applicants personal information
-// all optionals since none of these properties are mandatory
-// across the different entrant types
+// all optionals strings since this is the raw unvalidated
+// data entry content
 struct RawPersonalDetails {
     var firstName: String?
     var lastName: String?
@@ -24,6 +24,7 @@ struct RawPersonalDetails {
     var projectNumber: String?
 }
 
+// a similar struct, but here the data types are enforced
 struct PersonalDetails {
     var firstName: String?
     var lastName: String?

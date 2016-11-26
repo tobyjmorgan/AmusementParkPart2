@@ -29,6 +29,7 @@ class DateHelper {
     static func getDateFromStringMM_DD_YYYY(stringDate: String) -> Date? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM/dd/yyyy"
-        return dateFormatter.date(from: stringDate)
+        let date = dateFormatter.date(from: stringDate)
+        return date
     }
 }

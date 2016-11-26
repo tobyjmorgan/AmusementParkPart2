@@ -9,6 +9,7 @@
 import Foundation
 import GameKit
 
+// pre-population data organized as an extenstion to entrant type
 extension EntrantType {
     
     func getPrePopulatedData() -> RawPersonalDetails {

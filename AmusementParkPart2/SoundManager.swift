@@ -15,17 +15,20 @@ class SoundManager {
         // create constants for notifications
         static let notificationPlayDingSound = "notificationPlayDingSound"
         static let notificationPlayBuzzSound = "notificationPlayBuzzSound"
+        static let notificationPlayAlertSound = "notificationPlayAlertSound"
     }
     
     // sounds
     var dingSound: SystemSoundID = 0
     var buzzSound: SystemSoundID = 0
+    var alertSound: SystemSoundID = 0
     
     init() {
         loadSounds()
         
         NotificationCenter.default.addObserver(self, selector: #selector(playDingSound), name: NSNotification.Name(rawValue: SoundManager.Notifications.notificationPlayDingSound), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(playBuzzSound), name: NSNotification.Name(rawValue: SoundManager.Notifications.notificationPlayBuzzSound), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(playAlertSound), name: NSNotification.Name(rawValue: SoundManager.Notifications.notificationPlayAlertSound), object: nil)
     }
     
     // load the specified sound
@@ -43,6 +46,7 @@ class SoundManager {
         
         loadSound(filename: "AccessGranted", systemSound: &dingSound)
         loadSound(filename: "AccessDenied", systemSound: &buzzSound)
+        loadSound(filename: "Alert", systemSound: &alertSound)
     }
     
     @objc func playDingSound() {
@@ -51,5 +55,9 @@ class SoundManager {
     
     @objc func playBuzzSound() {
         AudioServicesPlaySystemSound(buzzSound)
+    }
+
+    @objc func playAlertSound() {
+        AudioServicesPlaySystemSound(alertSound)
     }
 }

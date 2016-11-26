@@ -8,8 +8,9 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, PassViewControllerDelegate {
     
+    var sounds = SoundManager()
     var model = Model()
     var masterTypeButtons: [UIButton] = []
     var subTypeButtons: [UIButton] = []
@@ -36,9 +37,54 @@ class ViewController: UIViewController {
     @IBOutlet var lowerButtonStackViewBottomConstraint: NSLayoutConstraint!
     
     
+    
+    
     //////////////////////////////////////////////////////////
     // Mark: Actions
 
+    @IBAction func onGeneratePass() {
+       
+        model.currenPass = nil
+        
+        do {
+
+            // try to create a pass with the supplied information
+            let pass = try PassGenerator.generatePass(applicant: copyFormToPersonalDetails(), entrantType: model.activeEntrantType)
+            
+            // set it to the model's current pass
+            model.currenPass = pass
+            
+            // launch the segue to the pass view controller
+            performSegue(withIdentifier: "PassSegue", sender: nil)
+            
+        } catch PassGenerator.PassGeneratorError.missingInformation(let message) {
+            reportError(message: "\(message) is a required field.")
+        } catch PassGenerator.PassGeneratorError.invalidInformation(let message) {
+            reportError(message: "Invalid value - \(message).")
+        } catch PassGenerator.PassGeneratorError.excessivelyLongValue(let message) {
+            reportError(message: "\(message): value too long.")
+        } catch PassGenerator.PassGeneratorError.entrantSubTypeDoesNotRelateToMasterType {
+            reportError(message: "The entrant sub-type does not relate to the entrant master-type.")
+        } catch PassGenerator.PassGeneratorError.doesNotQualify(let message) {
+            reportError(message: message)
+        } catch {
+            reportError(message: "There was an unknown problem trying to generate a pass.")
+        }
+        
+    }
+    
+    @IBAction func onPopulateData() {
+        let details = model.activeEntrantType.getPrePopulatedData()
+        
+        copyPersonalDetailsToForm(details: details)
+    }
+    
+    
+
+    
+    //////////////////////////////////////////////////////////
+    // Mark: Utility functions
+    
     func getMatchingLabelText(tag: DataEntryTag) -> String? {
         for label in allLabels {
             if label.tag == tag.rawValue {
@@ -52,6 +98,8 @@ class ViewController: UIViewController {
         return nil
     }
     
+    // takes all the data entered and places it on a single RawPersonalDetails
+    // object ready for passing to the Pass generator
     func copyFormToPersonalDetails() -> RawPersonalDetails {
         
         // create a personal details object ready for adding details
@@ -69,7 +117,7 @@ class ViewController: UIViewController {
                 // convert the tag in to a data entry enumeration case
                 // makes the switch more readable
                 if let dataEntryTag = DataEntryTag(rawValue: field.tag) {
-                
+                    
                     let textValue = field.text
                     
                     // copy the values to the personal details object
@@ -102,6 +150,7 @@ class ViewController: UIViewController {
         return details
     }
     
+    // used when pre-populating takes generated data and assigns the values
     func copyPersonalDetailsToForm(details: RawPersonalDetails) {
         
         // get the data entry policy for the master/sub type combination
@@ -145,37 +194,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func onGeneratePass() {
-       
-        do {
 
-            let pass = try PassGenerator.generatePass(applicant: copyFormToPersonalDetails(), entrantType: model.activeEntrantType)
-            
-            print(pass.description())
-            
-        } catch PassGenerator.PassGeneratorError.missingInformation(let message) {
-            reportError(message: "\(message) is a required field.")
-        } catch PassGenerator.PassGeneratorError.invalidInformation(let message) {
-            reportError(message: "Invalid value - \(message).")
-        } catch PassGenerator.PassGeneratorError.excessivelyLongValue(let message) {
-            reportError(message: "\(message): value too long.")
-        } catch PassGenerator.PassGeneratorError.entrantSubTypeDoesNotRelateToMasterType {
-            reportError(message: "The entrant sub-type does not relate to the entrant master-type.")
-        } catch PassGenerator.PassGeneratorError.doesNotQualify(let message) {
-            reportError(message: message)
-        } catch {
-            reportError(message: "There was an unknown problem trying to generate a pass.")
-        }
-        
-    }
-    
-    @IBAction func onPopulateData() {
-        let details = model.activeEntrantType.getPrePopulatedData()
-        
-        copyPersonalDetailsToForm(details: details)
-    }
-    
-    
     
     
     override func viewDidLoad() {
@@ -229,9 +248,12 @@ class ViewController: UIViewController {
     }
     
     
+    
+    
     //////////////////////////////////////////////////////////
     // Mark: Error reporting
     func reportError(message: String) {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: SoundManager.Notifications.notificationPlayAlertSound), object: nil)
         let alert = UIAlertController(title: "Oops!", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Got it", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
@@ -239,9 +261,11 @@ class ViewController: UIViewController {
     
     
     
+    
     //////////////////////////////////////////////////////////
     // Mark: Manually created button selectors
     
+    // called when a master type (top buttons) is selected
     func onMasterType(sender: UIButton) {
         
         // attempt to convert sender's title to a master type
@@ -261,6 +285,7 @@ class ViewController: UIViewController {
         }
     }
     
+    // called when a sub type (second row of buttons) is selected
     func onSubType(sender: UIButton) {
         
         // attempt to convert sender's title to a sub type
@@ -285,7 +310,7 @@ class ViewController: UIViewController {
     
     
     //////////////////////////////////////////////////////////
-    // Mark: Controls handling
+    // Mark: Data entry fields handling
     
     // change enablement of fields based on master and sub type combination
     func refreshControlEnablement() {
@@ -445,6 +470,30 @@ class ViewController: UIViewController {
         
         // clear out old data
         clearOutOldValues()
+    }
+    
+    
+    
+    
+    //////////////////////////////////////////////////////////
+    // Mark: PassViewControllerDelegate
+    
+    // when we segue to the pass view controller, set its delegate to us
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let passVC = segue.destination as? PassViewController {
+            passVC.delegate = self
+        }
+    }
+    
+    // returns the current model's Pass object if available
+    func getCurrentPass() -> Pass? {
+        return model.currenPass
+    }
+    
+    // clear out current pass object and dismiss pass view controller
+    func onDismissPassViewController() {
+        model.currenPass = nil
+        dismiss(animated: true, completion: nil)
     }
 }
 

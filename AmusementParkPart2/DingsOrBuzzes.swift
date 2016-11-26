@@ -15,6 +15,7 @@ protocol DingsOrBuzzes {
 }
 
 extension DingsOrBuzzes {
+    
     func playDingSound() {
         // sending notifications to whoever is listening for them
         // in this case it will be SoundManager
@@ -22,6 +23,22 @@ extension DingsOrBuzzes {
     }
     
     func playBuzzSound() {
+        // sending notifications to whoever is listening for them
+        // in this case it will be SoundManager
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: SoundManager.Notifications.notificationPlayBuzzSound), object: nil)
+    }
+    
+    
+    // N.B. had to create static versions of these methods for when swipe methods aare
+    // created and called at class level
+    
+    static func playDingSound() {
+        // sending notifications to whoever is listening for them
+        // in this case it will be SoundManager
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: SoundManager.Notifications.notificationPlayDingSound), object: nil)
+    }
+    
+    static func playBuzzSound() {
         // sending notifications to whoever is listening for them
         // in this case it will be SoundManager
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: SoundManager.Notifications.notificationPlayBuzzSound), object: nil)
