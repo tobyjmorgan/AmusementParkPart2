@@ -102,7 +102,7 @@ class PassViewController: UIViewController {
             
             nameLabel.text = "\(firstName) \(lastName)"
         } else {
-            nameLabel.text = ""
+            nameLabel.text = " "
         }
         
         let passDescription = pass.entrantType.description() + " Pass"
@@ -111,7 +111,7 @@ class PassViewController: UIViewController {
         if let result = RideAccess.swipe(pass: pass, silent: true) as? RideAccess.RideAccessSwipeResult {
             rideAccessLabel.text = result.message
         } else {
-            rideAccessLabel.text = ""
+            rideAccessLabel.text = " "
         }
         
         
@@ -120,7 +120,7 @@ class PassViewController: UIViewController {
             
             foodDiscountLabel.text = "\(amount)% Food Discount"
         } else {
-            foodDiscountLabel.text = ""
+            foodDiscountLabel.text = " "
         }
         
         if let result = DiscountType.merchandise.swipe(pass: pass, silent: true) as? DiscountType.DiscountTypeSwipeResult,
@@ -128,7 +128,7 @@ class PassViewController: UIViewController {
             
             merchandiseDiscountLabel.text = "\(amount)% Merch Discount"
         } else {
-            merchandiseDiscountLabel.text = ""
+            merchandiseDiscountLabel.text = " "
         }
     }
 }
